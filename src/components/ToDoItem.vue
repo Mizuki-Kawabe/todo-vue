@@ -1,21 +1,14 @@
 <template>
   <div>
-    <input type="checkbox" id="todo-item" :checked="isDone" />
+    <input type="checkbox" :id="id" :checked="done" @change="onChange" />
     <label :for="id">{{ label }}</label>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    label: { required: true, type: String },
-    done: { default: false, type: Boolean },
-    id: { required: true, type: String },
-  },
-  data() {
-    return {
-      // use this to access a component's props and other properties from inside data
-      isDone: this.done,
-    }
-  },
-}
+
+<script setup>
+defineProps({
+  label: { type: String, required: true },
+  done: { type: Boolean, default: false },
+  id: { type: String, required: true },
+})
 </script>
