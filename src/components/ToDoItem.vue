@@ -9,12 +9,12 @@ export default {
   props: {
     label: { required: true, type: String },
     done: { default: false, type: Boolean },
+    id: { required: true, type: String },
   },
   data() {
     return {
       // use this to access a component's props and other properties from inside data
       isDone: this.done,
-      id: `todo-${crypto.randomUUID()}`,
     }
   },
 }
