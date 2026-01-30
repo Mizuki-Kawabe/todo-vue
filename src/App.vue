@@ -2,16 +2,22 @@
   <div>
     <h1>My To-Do List</h1>
     <to-do-form @todo-added="addToDo"></to-do-form>
+    <h2 id="list-summary">{{ listSummary }}</h2>
     <ul aria-labelledby="list-summary" class="stack-large">
       <li v-for="item in ToDoItems" :key="item.id">
-        <to-do-item :label="item.label" :done="item.done" :id="item.id"></to-do-item>
+        <to-do-item
+          :label="item.label"
+          :done="item.done"
+          :id="item.id"
+          @checkbox-changed="updateDoneStatus(item.id)"
+        ></to-do-item>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { nanoid } from 'nanoid'
 import ToDoItem from './components/ToDoItem.vue'
 import ToDoForm from './components/ToDoForm.vue'
@@ -42,6 +48,19 @@ function addToDo(label) {
     done: false,
   })
 }
+
+function updateDoneStatus(toDoId) {
+  const toDoToUpdate = ToDoItems.value.find((item) => item.id === toDoId)
+
+  if (!toDoToUpdate) return
+
+  toDoToUpdate.done = !toDoToUpdate.done
+}
+
+const listSummary = computed(() => {
+  const finished = ToDoItems.value.filter((item) => item.done).length
+  return `${finished} out of ${ToDoItems.value.length} items completed`
+})
 </script>
 
 <style>
