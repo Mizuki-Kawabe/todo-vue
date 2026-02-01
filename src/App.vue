@@ -7,7 +7,7 @@
       <li v-for="item in ToDoItems" :key="item.id">
         <to-do-item
           :label="item.label"
-          :done="item.done"
+          :isDone="item.isDone"
           :id="item.id"
           @checkbox-changed="updateDoneStatus(item.id)"
         ></to-do-item>
@@ -20,21 +20,22 @@
 import { ref, computed } from 'vue'
 import { nanoid } from 'nanoid'
 import ToDoItem from './components/ToDoItem.vue'
-import ToDoForm from './components/ToDoForm.vue'
 
 // setupを使うならdata() → ref に変換
 const ToDoItems = ref([
-  { id: `todo-${nanoid()}`, label: 'Learn Vue', done: false },
+  { id: `todo-${nanoid()}`, label: 'Learn Vue', isDone: false, isEditing: false },
   {
     id: `todo-${nanoid()}`,
     label: 'Create a Vue project with the CLI',
-    done: true,
+    isDone: true,
+    isEditing: false,
   },
-  { id: `todo-${nanoid()}`, label: 'Have fun', done: true },
+  { id: `todo-${nanoid()}`, label: 'Have fun', isDone: true, isEditing: false },
   {
     id: `todo-${nanoid()}`,
     label: 'Create a to-do list',
-    done: false,
+    isDone: false,
+    isEditing: false,
   },
 ])
 
@@ -45,7 +46,8 @@ function addToDo(label) {
   ToDoItems.value.push({
     id: `todo-${nanoid()}`,
     label,
-    done: false,
+    isDone: false,
+    isEditing: false,
   })
 }
 
@@ -54,11 +56,11 @@ function updateDoneStatus(toDoId) {
 
   if (!toDoToUpdate) return
 
-  toDoToUpdate.done = !toDoToUpdate.done
+  toDoToUpdate.isDone = !toDoToUpdate.isDone
 }
 
 const listSummary = computed(() => {
-  const finished = ToDoItems.value.filter((item) => item.done).length
+  const finished = ToDoItems.value.filter((item) => item.isDone).length
   return `${finished} out of ${ToDoItems.value.length} items completed`
 })
 </script>

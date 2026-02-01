@@ -1,22 +1,54 @@
 <template>
-  <div class="custom-checkbox">
-    <input
-      type="checkbox"
-      :id="id"
-      :checked="done"
-      @change="$emit('checkbox-changed')"
-      class="checkbox"
-    />
-    <label :for="id" class="checkbox-label">{{ label }}</label>
+  <div class="stack-small" v-if="!isEditing">
+    <div class="custom-checkbox">
+      <input
+        type="checkbox"
+        :id="id"
+        :checked="isDone"
+        @change="onCheckboxChange"
+        class="checkbox"
+      />
+      <label :for="id" class="checkbox-label">{{ label }}</label>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn" @click="toggleToItemEditForm">
+        Edit <span class="visually-hidden">{{ label }}</span>
+      </button>
+      <button type="button" class="btn btn__danger" @click="deleteToDo">
+        Delete <span class="visually-hidden">{{ label }}</span>
+      </button>
+    </div>
   </div>
+  <to-do-item-edit-form v-else :id="id" :label="label"></to-do-item-edit-form>
 </template>
 
 <script setup>
-defineProps({
+import { ref } from 'vue'
+import ToDoItemEditForm from './ToDoItemEditForm.vue'
+
+const props = defineProps({
   label: { type: String, required: true },
-  done: { type: Boolean, default: false },
+  isDone: { type: Boolean, default: false },
   id: { type: String, required: true },
 })
+
+const emit = defineEmits(['checkbox-changed', 'item-deleted'])
+
+// ローカル状態（data() の代わり）
+const isEditing = ref(false)
+
+function deleteToDo() {
+  emit('item-deleted', props.id)
+}
+
+function toggleToItemEditForm() {
+  isEditing.value = true
+}
+
+function onCheckboxChange() {
+  emit('checkbox-changed', props.id)
+}
 </script>
 
 <style scoped>
